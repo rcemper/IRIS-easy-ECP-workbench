@@ -65,6 +65,7 @@ Classes and test data are borrowed from SAMPLES in Caché and preloaded.
 - Sample.USZipCode  
 - Sample.Utils  
 - Sample.Vendor  
+
 So trying, testing, extending, screwing this workbench by  
 __your own__ Classes, Tables, Data, Queries are ready to go.
 
