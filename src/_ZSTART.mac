@@ -1,0 +1,17 @@
+ROUTINE %ZSTART [Type=MAC]
+%ZSTART ; User startup routine.
+	quit
+#; cannot be invoked directly
+SYSTEM ;
+#; InterSystems IRIS starting
+    do ^zECPinit
+    quit
+LOGIN ;
+#; a user logs into InterSystems IRIS
+   quit
+JOB
+#; JOB'd process begins
+	quit
+CALLIN ;
+#; a process enters via CALLIN interface			
+	quit
