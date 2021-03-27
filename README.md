@@ -1,64 +1,71 @@
-## intersystems-objectscript-template
-This is a template for InterSystems ObjectScript Github repository.
-The template goes also with a few files which let you immedietly compile your ObjecScript files in InterSystems IRIS Community Edition in a docker container
+__Purpose:__ 
+Testing ECP-based applications often take quite some effort for setup and preparation.  
+I have created a Docker-based workbench that allows you to have it quick at hands.  
+And if you crash it? You just give your containers a fresh start.  
+The whole setup runs code-based during the start-up of your instance.  
+In that sense, it is also a portable coding example using ZPM and the objectscript-docker-template  
+  
+It's a fast setup of ECP client / sever with almost no manual intervention  
+with everything included in the repository available from OEX.  
+_Except:_   
+As the default community-license doesn't include multi-server-features (ECP) you might 
+have to use your own license or get a temporary loan license from WRC that you add to  
+the downloaded set from GitHub as __ECP_iris.key__ before starting.   
 
-## Prerequisites
-Make sure you have [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Docker desktop](https://www.docker.com/products/docker-desktop) installed.
+__Installation:__  
+From terminal/command prompt  in the download directory run  
+~~~
+      docker-compose build 
+~~~
+And it will prepare __2__ containers for __ECPserver__ and __ECPclient.__   
+They are pretty much the same except that they get a hostname: server and client   
+This allows communication between the containers based on network names  
+instead of dynamic (and unpredictable) DHCP addresses.  
+The internal ports for external access as SMP, ... _1972,52773,53773_ are published to  
+_41773,42773,43773_ for the server and _41443,42443,43443_ for the client  
 
-## Installation 
+Next, you launch both containers  by   
+~~~
+      docker-compose up -d  
+~~~
+Both containers start but it may take some time as the whole configuration happens  
+(only) during the first startup of the container. For a simple reason I had to learn:   
+The final hostname is not available in the temporary containers during the build!  
+And there is obviously a difference!  
+  
+In addition, the client can only connect when the server finished startup. 
+I experienced up to 120 sec until ECP was running stable and both startups completed.  
+  
+Impatient people (as me) meanwhile watch the progress by  
+~~~
+      docker logs <containername>   
+~~~
+It is exactly the output you see in messages.log   
 
-Clone/git pull the repo into any local directory
+__Testing:__
+You may either open a session to server or client by
+~~~
+      docker-compose exec server iris session iris
+      docker-compose exec client iris session iris
+~~~
+or you use SMP at local ports 42773 or 42443   
 
-```
-$ git clone https://github.com/intersystems-community/objectscript-docker-template.git
-```
+__Test data:__  
+In namespace USER Code and Data are stored in separated databases:   
+Code (Classes) are in database USER in both containers.   
+Data are stored in the database  IRISLOCALDATA on the server  
+On the client, data from the same database are used as __RemoteDatabase over ECP__   
 
-Open the terminal in this directory and run:
+Classes and test data are borrowed from SAMPLES in Caché and preloaded.  
+- Sample.Address  
+- Sample.Company  
+- Sample.Customer  
+- Sample.Employee  
+- Sample.Person  
+- Sample.USZipCode  
+- Sample.Utils  
+- Sample.Vendor  
+So trying, testing, extending, screwing this workbench by  
+__your own__ Classes, Tables, Data, Queries are ready to go.
 
-```
-$ docker-compose build
-```
-
-3. Run the IRIS container with your project:
-
-```
-$ docker-compose up -d
-```
-
-## How to Test it
-
-Open IRIS terminal:
-
-```
-$ docker-compose exec iris iris session iris
-USER>write ##class(dc.PackageSample.ObjectScript).Test()
-```
-## How to start coding
-This repository is ready to code in VSCode with ObjectScript plugin.
-Install [VSCode](https://code.visualstudio.com/), [Docker](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker) and [ObjectScript](https://marketplace.visualstudio.com/items?itemName=daimor.vscode-objectscript) plugin and open the folder in VSCode.
-Open /src/cls/PackageSample/ObjectScript.cls class and try to make changes - it will be compiled in running IRIS docker container.
-![docker_compose](https://user-images.githubusercontent.com/2781759/76656929-0f2e5700-6547-11ea-9cc9-486a5641c51d.gif)
-
-Feel free to delete PackageSample folder and place your ObjectScript classes in a form
-/src/Package/Classname.cls
-[Read more about folder setup for InterSystems ObjectScript](https://community.intersystems.com/post/simplified-objectscript-source-folder-structure-package-manager)
-
-The script in Installer.cls will import everything you place under /src into IRIS.
-
-
-## What's inside the repository
-
-### Dockerfile
-
-The simplest dockerfile which starts IRIS and imports code from /src folder into it.
-Use the related docker-compose.yml to easily setup additional parametes like port number and where you map keys and host folders.
-
-
-### .vscode/settings.json
-
-Settings file to let you immedietly code in VSCode with [VSCode ObjectScript plugin](https://marketplace.visualstudio.com/items?itemName=daimor.vscode-objectscript))
-
-### .vscode/launch.json
-Config file if you want to debug with VSCode ObjectScript
-
-[Read about all the files in this artilce](https://community.intersystems.com/post/dockerfile-and-friends-or-how-run-and-collaborate-objectscript-projects-intersystems-iris)
+ [Article in DC](https://community.intersystems.com/post/iris-easy-ecp-workbench)
