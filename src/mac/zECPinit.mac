@@ -1,0 +1,92 @@
+ROUTINE zECPinit [Type=MAC]
+zECPinit ; setup at startup
+	zn "%SYS"
+	set file="/etc/hostname"
+	open file::0 else  o 1 u 1 write "--> no hostname" c 1 quit
+	use file read host close file
+	o 1 u 1 write "--> run setup for hostname: "_host c 1
+	do $case(host,"server":server
+				, "client":client
+				, :oops )
+	quit
+oops				
+	o 1 u 1 write "--> OOPS: wrong hostname: "_host c 1
+	quit
+error
+	zn "%SYS"
+	o 1 u 1 do $system.OBJ.DisplayError(%objlasterror) c 1 
+	quit
+server
+	if $d(^%rcc(host)) goto enableECP
+	set nsp=##class(Config.Namespaces).Open("USER")
+	set nsp.Globals="IRISLOCALDATA"
+	set sc=nsp.%Save()
+	if 'sc goto error
+	zn "USER"
+	o 1 u 1
+	set sc=$system.OBJ.Load("/opt/irisapp/user/export.gof") 
+	if 'sc goto error
+	set sc=$system.OBJ.LoadDir("/opt/irisapp/user/","ck")
+	if 'sc goto error
+	c 1
+	zn "%SYS"
+	do enableECP
+	quit
+client
+	if $d(^%rcc(host)) goto enableECP
+	set server="DATASERVER"
+	set par("Address")="server"
+	set par("Port")=1972
+	set sc=##class(Config.ECPServers).Create(server,.par)
+	if 'sc goto error
+	do enableECP
+wait5
+	set sc=##class(SYS.ECP).ServerAction(server,3,5) ; normal + wait 5 sec 
+    set state=##class(SYS.ECP).GetServerConnState(server)
+	if state=2,$i(hang),hang<30 {
+		o 1 u 1 write "--> ECP wait "_(hang*5)_" sec" 
+		c 1 hang 5 
+		goto wait5
+		}
+	if state-5 {
+		 set msg=$case(state,
+	        -2:"Invalid connection name",
+	        -1:"Invalid",
+	         0:"Initializing",
+	         1:"Not Connected",
+	         2:"Connection in Progress",
+	         3:"Connection Failed",
+	         4:"Disabled",
+	         5:"Normal",
+	         6:"Trouble",
+	         7:"Recovery",
+	          :"unknown")
+  	 	o 1 u 1 write "--> ECP Server status "_state_" "_msg
+  	 	c 1 quit
+		}
+	set db("Directory")="/usr/irissys/mgr/irislocaldata/"
+	set db("Server")=server
+	set dbname="ECPDATA"	
+	set sc=##class(Config.Databases).Create(dbname,.db)
+	if 'sc goto error
+	set nsp="USER"
+	set ns("Globals")=dbname
+	set sc=##class(Config.Namespaces).Modify(nsp,.ns)
+	if 'sc goto error
+	zn "USER"
+	o 1 u 1 
+	set sc=$system.OBJ.LoadDir("/opt/irisapp/user/","ck")
+	if 'sc goto error
+	zn "%SYS"
+	c 1
+	quit
+
+enableECP 
+	set ecp="%service_ecp"
+	set set("Enabled")=1
+	set sc=##class(Security.Services).Modify(ecp,.set)
+	o 1 u 1 Write "--> ECP enabled" zw sc c 1
+        if 'sc goto error       
+	set ^%rcc(host)=1
+	quit	
+	
