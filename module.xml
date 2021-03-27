@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Export generator="Cache" version="25">
-  <Document name="objectscript-template.ZPM">
+  <Document name="iris-ecp-workbench.ZPM">
     <Module>
-      <Name>objectscript-template</Name>
-      <Version>1.1.2</Version>
+      <Name>iris-ecp-workbench</Name>
+      <Version>0.0.1</Version>
+      <Description>Initialize ECP Server + Client Workbench</Description>
+      <Keywords>Mirror</Keywords>
       <Packaging>module</Packaging>
       <SourcesRoot>src</SourcesRoot>
-      <Resource Name="dc.PackageSample.PKG"/>
+      <Resource Name="zECPinit.MAC"/>
+      <Resource Name="%ZSTART.MAC"/>
     </Module>
   </Document>
 </Export>
