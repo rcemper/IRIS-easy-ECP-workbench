@@ -5,7 +5,7 @@ And if you crash it? You just give your containers a fresh start.
 The whole setup runs code-based during the start-up of your instance.  
 In that sense, it is also a portable coding example using ZPM and the objectscript-docker-template  
   
-It's a fast setup of ECP client / sever with almost no manual intervention  
+It's a fast setup of ECP client / server with almost no manual intervention  
 with everything included in the repository available from OEX.  
 _Except:_   
 As the default community-license doesn't include multi-server-features (ECP) you might 
