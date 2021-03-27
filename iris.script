@@ -1,7 +1,7 @@
 zn "%SYS"
 Do ##class(Security.Users).UnExpireUserPasswords("*")
 Do $System.OBJ.LoadDir("/opt/irisapp/src","cuk")
-zpm "load /opt/irisapp/ -v":1
+zpm "load /opt/irisapp/ -v":1 
 write "No halt after ZPM",!
 ZN "USER"
 write "DONE!"
