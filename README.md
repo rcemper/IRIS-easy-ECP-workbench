@@ -1,4 +1,4 @@
-__Purpose:__ 
+__Purpose:__   
 Testing ECP-based applications often take quite some effort for setup and preparation.  
 I have created a Docker-based workbench that allows you to have it quick at hands.  
 And if you crash it? You just give your containers a fresh start.  
