@@ -26,10 +26,12 @@ _41773,42773,43773_ for the server and _41443,42443,43443_ for the client
 
 Next, you launch both containers  by   
 ~~~
-      docker-compose up -d  
+      docker-compose up -d server
+      docker-compose up -d client  
 ~~~
-Both containers start but it may take some time as the whole configuration happens  
-(only) during the first startup of the container. For a simple reason I had to learn:   
+Don't start containers together but in sequence, as it may take some time until  
+the whole configuration completes [only during the first startup] of the container.   
+For a simple reason I had to learn:   
 The final hostname is not available in the temporary containers during the build!  
 And there is obviously a difference!  
   
