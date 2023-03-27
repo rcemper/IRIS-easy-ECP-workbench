@@ -1,3 +1,5 @@
+<p align="right"><img src="https://github.com/isc-at/CPIPE/blob/master/archived.jpg"/></p>
+
 __Purpose:__   
 Testing ECP-based applications often take quite some effort for setup and preparation.  
 I have created a Docker-based workbench that allows you to have it quick at hands.  
